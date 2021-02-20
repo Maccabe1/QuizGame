@@ -7,16 +7,22 @@
 
 import Foundation
 
-protocol Router {}
+protocol Router {
+    func routeTo(question: String)
+}
 
 class GameFlow {
     let router: Router
+    let questions: [String]
     
-    init(router: Router) {
+    init(questions: [String], router: Router) {
+        self.questions = questions
         self.router = router
     }
     
     func start() {
-        
+        if(!questions.isEmpty) {
+        router.routeTo(question: "")
+        }
     }
 }
