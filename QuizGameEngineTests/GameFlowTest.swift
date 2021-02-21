@@ -40,7 +40,6 @@ class GameFlowTest: XCTestCase {
     
     func test_startTwice_withTwoQuestions_routesToFirstQuestionTwice() {
         let sysut = makeSysUT(questions: ["Question 1", "Question 2"])
-        
         sysut.start()
         sysut.start()
         
@@ -50,7 +49,6 @@ class GameFlowTest: XCTestCase {
     func test_startAndAnswerFirstQuestion_withTwoQuestions_routesToSecondQuestion() {
         let sysut = makeSysUT(questions: ["Question 1", "Question 2"])
         sysut.start()
-        
         router.answerCallback("Answer Question 1")
         
         XCTAssertEqual(router.routedQuestions, ["Question 1", "Question 2"])
@@ -59,7 +57,6 @@ class GameFlowTest: XCTestCase {
     func test_startAndAnswerFirstAndSecondQuestion_withThreeQuestions_routesToThirdQuestion() {
         let sysut = makeSysUT(questions: ["Question 1", "Question 2", "Question 3"])
         sysut.start()
-        
         router.answerCallback("Answer Question 1")
         router.answerCallback("Answer Question 2")
         
