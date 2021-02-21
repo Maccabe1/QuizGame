@@ -22,23 +22,28 @@ class GameFlowTest: XCTestCase {
     
     func test_start_withOneQuestion_routesToCorrectQuestion_1() {
         makeSysUT(questions: ["Question 1"]).start()
+        
         XCTAssertEqual(router.routedQuestions, ["Question 1"])
     }
     
     func test_start_withOneQuestion_routesToCorrectQuestion_2() {
         makeSysUT(questions: ["Question 2"]).start()
+        
         XCTAssertEqual(router.routedQuestions, ["Question 2"])
     }
     
     func test_start_withTwoQuestions_routesToFirstQuestion() {
         makeSysUT(questions: ["Question 1", "Question 2"]).start()
+        
         XCTAssertEqual(router.routedQuestions, ["Question 1"])
     }
     
     func test_startTwice_withTwoQuestions_routesToFirstQuestionTwice() {
         let sysut = makeSysUT(questions: ["Question 1", "Question 2"])
+        
         sysut.start()
         sysut.start()
+        
         XCTAssertEqual(router.routedQuestions, ["Question 1", "Question 1"])
     }
     
@@ -51,6 +56,16 @@ class GameFlowTest: XCTestCase {
         XCTAssertEqual(router.routedQuestions, ["Question 1", "Question 2"])
     }
     
+    func test_startAndAnswerFirstAndSecondQuestion_withThreeQuestions_routesToThirdQuestion() {
+        let sysut = makeSysUT(questions: ["Question 1", "Question 2", "Question 3"])
+        sysut.start()
+        
+        router.answerCallback("Answer Question 1")
+        router.answerCallback("Answer Question 2")
+        
+        XCTAssertEqual(router.routedQuestions, ["Question 1", "Question 2", "Question 3"])
+    }
+    
     
     func makeSysUT(questions: [String]) -> GameFlow {
         return GameFlow(questions: questions, router: router)
@@ -60,7 +75,7 @@ class GameFlowTest: XCTestCase {
         var routedQuestions: [String] = []
         var answerCallback: ((String) -> Void) = { _ in }
         
-        func routeTo(question: String, answerCallback: @escaping (String) -> Void) {
+        func routeTo(question: String, answerCallback: @escaping AnswerCallback) {
             routedQuestions.append(question)
             self.answerCallback = answerCallback
         }
