@@ -12,59 +12,48 @@ import XCTest
 
 class GameFlowTest: XCTestCase {
     
+    let router = RouterSpy()
+    
     func test_start_withNoQuestions_doesNotRouteToQuestion() {
-        //arange
-        let router = RouterSpy()
-        let sysut = GameFlow(questions: [], router: router)
-        
-        //act
-        sysut.start()
-        
-        //assert
+        makeSysUT(questions: []).start()
+
         XCTAssertTrue(router.routedQuestions.isEmpty)
     }
     
     func test_start_withOneQuestion_routesToCorrectQuestion_1() {
-        let router = RouterSpy()
-        let sysut = GameFlow(questions: ["Question 1"], router: router)
-        
-        sysut.start()
+        makeSysUT(questions: ["Question 1"]).start()
         XCTAssertEqual(router.routedQuestions, ["Question 1"])
     }
     
     func test_start_withOneQuestion_routesToCorrectQuestion_2() {
-        let router = RouterSpy()
-        let sysut = GameFlow(questions: ["Question 2"], router: router)
-        
-        sysut.start()
+        makeSysUT(questions: ["Question 2"]).start()
         XCTAssertEqual(router.routedQuestions, ["Question 2"])
     }
     
     func test_start_withTwoQuestions_routesToFirstQuestion() {
-        let router = RouterSpy()
-        let sysut = GameFlow(questions: ["Question 1", "Question 2"], router: router)
-        
-        sysut.start()
+        makeSysUT(questions: ["Question 1", "Question 2"]).start()
         XCTAssertEqual(router.routedQuestions, ["Question 1"])
     }
     
     func test_startTwice_withTwoQuestions_routesToFirstQuestionTwice() {
-        let router = RouterSpy()
-        let sysut = GameFlow(questions: ["Question 1", "Question 2"], router: router)
-        
+        let sysut = makeSysUT(questions: ["Question 1", "Question 2"])
         sysut.start()
         sysut.start()
         XCTAssertEqual(router.routedQuestions, ["Question 1", "Question 1"])
     }
     
     func test_startAndAnswerFirstQuestion_withTwoQuestions_routesToSecondQuestion() {
-        let router = RouterSpy()
-        let sysut = GameFlow(questions: ["Question 1", "Question 2"], router: router)
-        
+        let sysut = makeSysUT(questions: ["Question 1", "Question 2"])
         sysut.start()
+        
         router.answerCallback("Answer Question 1")
         
         XCTAssertEqual(router.routedQuestions, ["Question 1", "Question 2"])
+    }
+    
+    
+    func makeSysUT(questions: [String]) -> GameFlow {
+        return GameFlow(questions: questions, router: router)
     }
     
     class RouterSpy: Router {
