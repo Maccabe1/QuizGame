@@ -49,11 +49,25 @@ class GameFlowTest: XCTestCase {
         XCTAssertEqual(router.routedQuestions, ["Question 1", "Question 2", "Question 3"])
     }
     
-    func test_startAndAnswerFirstQuestion_withIOneQuestions_doesntRouteToAnotherQuestion() {
+    func test_startAndAnswerFirstQuestion_withOneQuestion_doesntRouteToAnotherQuestion() {
         let sysut = makeSysUT(questions: ["Question 1"])
         sysut.start()
         router.answerCallback("Answer Question 1")
         XCTAssertEqual(router.routedQuestions, ["Question 1"])
+    }
+    
+    func test_start_withNoQuestions_routesToResult() {
+        makeSysUT(questions: []).start()
+        XCTAssertEqual(router.routedResult!, [:])
+    }
+    
+    func test_startAndAnswerFirstQuestion_withTwoQuestions_routesToResult() {
+        let sysut = makeSysUT(questions: ["Question 1", "Question 2"])
+        sysut.start()
+        router.answerCallback("Answer Question 1")
+        router.answerCallback("Answer Question 2")
+        XCTAssertEqual(router.routedResult!, ["Question 1": "Answer Question 1",
+                                              "Question 2": "Answer Question 2"])
     }
     
     func makeSysUT(questions: [String]) -> GameFlow {
@@ -62,11 +76,16 @@ class GameFlowTest: XCTestCase {
     
     class RouterSpy: Router {
         var routedQuestions: [String] = []
+        var routedResult: [String: String]? = nil
         var answerCallback: ((String) -> Void) = { _ in }
         
         func routeTo(question: String, answerCallback: @escaping AnswerCallback) {
             routedQuestions.append(question)
             self.answerCallback = answerCallback
+        }
+        
+        func routeTo(result: [String: String]){
+            routedResult = result
         }
     }
 }
