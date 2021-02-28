@@ -61,6 +61,18 @@ class GameFlowTest: XCTestCase {
         XCTAssertEqual(router.routedResult!, [:])
     }
     
+    func test_startWithOneQuestion_doesNotRouteToResult() {
+        makeSysUT(questions: ["Question 1"]).start()
+        XCTAssertNil(router.routedResult)
+    }
+    
+    func test_startAndAnswerFirstQuestion_withTwoQuestions_doesNotRouteToResult() {
+        let sysut = makeSysUT(questions: ["Question 1", "Question 2"])
+        sysut.start()
+        router.answerCallback("Answer Question 1")
+        XCTAssertNil(router.routedResult)
+    }
+    
     func test_startAndAnswerFirstQuestion_withTwoQuestions_routesToResult() {
         let sysut = makeSysUT(questions: ["Question 1", "Question 2"])
         sysut.start()
